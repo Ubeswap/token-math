@@ -1,3 +1,4 @@
+import { BigSource } from "big.js";
 import Decimal from "decimal.js-light";
 import JSBI from "jsbi";
 import invariant from "tiny-invariant";
@@ -114,9 +115,13 @@ export class TokenAmount<T extends Token<T>> extends Fraction {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     Big.DP = this.token.decimals;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-    return new Big(this.numerator)
-      .div(this.denominator.toString())
-      .toFormat(format);
+    return (
+      new Big(this.numerator as unknown as BigSource).div(
+        this.denominator.toString()
+      ) as unknown as {
+        toFormat: (format: NumberFormat) => string;
+      }
+    ).toFormat(format);
   }
 
   public override add(other: TokenAmount<T>): TokenAmount<T> {
