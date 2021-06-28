@@ -46,7 +46,10 @@ export class Price<T extends Token<T>> extends Fraction {
   }
 
   public override multiply(other: Price<T>): Price<T> {
-    invariant(this.quoteCurrency.equals(other.baseCurrency), "TOKEN");
+    invariant(
+      this.quoteCurrency.equals(other.baseCurrency),
+      `multiply token mismatch: ${this.quoteCurrency.toString()} !== ${other.baseCurrency.toString()}`
+    );
     const fraction = super.multiply(other);
     return new Price(
       this.baseCurrency,
@@ -58,7 +61,10 @@ export class Price<T extends Token<T>> extends Fraction {
 
   // performs floor division on overflow
   public quote(tokenAmount: TokenAmount<T>): TokenAmount<T> {
-    invariant(tokenAmount.token.equals(this.baseCurrency), "TOKEN");
+    invariant(
+      tokenAmount.token.equals(this.baseCurrency),
+      `quote token mismatch: ${tokenAmount.token.toString()} !== ${this.baseCurrency.toString()}`
+    );
     return new TokenAmount(
       this.quoteCurrency,
       super.multiply(tokenAmount.raw).quotient

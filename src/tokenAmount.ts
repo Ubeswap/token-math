@@ -120,12 +120,18 @@ export class TokenAmount<T extends Token<T>> extends Fraction {
   }
 
   public override add(other: TokenAmount<T>): TokenAmount<T> {
-    invariant(this.token.equals(other.token), `token add`);
+    invariant(
+      this.token.equals(other.token),
+      `add token mismatch: ${this.token.toString()} !== ${other.token.toString()}`
+    );
     return new TokenAmount(this.token, JSBI.add(this.raw, other.raw));
   }
 
   public override subtract(other: TokenAmount<T>): TokenAmount<T> {
-    invariant(this.token.equals(other.token), "TOKEN");
+    invariant(
+      this.token.equals(other.token),
+      `subtract token mismatch: ${this.token.toString()} !== ${other.token.toString()}`
+    );
     return new TokenAmount(this.token, JSBI.subtract(this.raw, other.raw));
   }
 
@@ -135,7 +141,10 @@ export class TokenAmount<T extends Token<T>> extends Fraction {
    * @returns
    */
   public divideByAmount(other: TokenAmount<T>): Percent {
-    invariant(this.token.equals(other.token), "TOKEN");
+    invariant(
+      this.token.equals(other.token),
+      `divideByAmount token mismatch: ${this.token.toString()} !== ${other.token.toString()}`
+    );
     const frac = this.divide(other);
     return new Percent(frac.numerator, frac.denominator);
   }
