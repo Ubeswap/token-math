@@ -1,7 +1,7 @@
+import _Big, { RoundingMode } from "big.js";
+import _Decimal from "decimal.js-light";
 import JSBI from "jsbi";
 import invariant from "tiny-invariant";
-import _Decimal from "decimal.js-light";
-import _Big, { RoundingMode } from "big.js";
 import toFormat from "toformat";
 
 import { Rounding } from "./constants";

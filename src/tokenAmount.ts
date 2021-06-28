@@ -1,7 +1,8 @@
 import Decimal from "decimal.js-light";
 import JSBI from "jsbi";
 import invariant from "tiny-invariant";
-import { MAX_U256, MAX_U64, Rounding, ZERO } from "./constants";
+
+import { MAX_U64, MAX_U256, Rounding, ZERO } from "./constants";
 import { Big, Fraction, NumberFormat } from "./fraction";
 import { Percent } from "./percent";
 import { Token } from "./token";
@@ -74,7 +75,7 @@ export class TokenAmount<T extends Token<T>> extends Fraction {
    * @param uiAmount
    * @returns
    */
-  public static parse<Tk extends Token<Tk>>(
+  public static parseFromString<Tk extends Token<Tk>>(
     token: Tk,
     uiAmount: string
   ): TokenAmount<Tk> {
@@ -92,7 +93,7 @@ export class TokenAmount<T extends Token<T>> extends Fraction {
     return this.numerator;
   }
 
-  public toSignificant(
+  public override toSignificant(
     significantDigits = 6,
     format?: NumberFormat,
     rounding: Rounding = Rounding.ROUND_DOWN
@@ -100,7 +101,7 @@ export class TokenAmount<T extends Token<T>> extends Fraction {
     return super.toSignificant(significantDigits, format, rounding);
   }
 
-  public toFixed(
+  public override toFixed(
     decimalPlaces: number = this.token.decimals,
     format?: NumberFormat,
     rounding: Rounding = Rounding.ROUND_DOWN
@@ -118,12 +119,12 @@ export class TokenAmount<T extends Token<T>> extends Fraction {
       .toFormat(format);
   }
 
-  public add(other: TokenAmount<T>): TokenAmount<T> {
-    invariant(this.token.equals(other.token), "TOKEN");
+  public override add(other: TokenAmount<T>): TokenAmount<T> {
+    invariant(this.token.equals(other.token), `token add`);
     return new TokenAmount(this.token, JSBI.add(this.raw, other.raw));
   }
 
-  public subtract(other: TokenAmount<T>): TokenAmount<T> {
+  public override subtract(other: TokenAmount<T>): TokenAmount<T> {
     invariant(this.token.equals(other.token), "TOKEN");
     return new TokenAmount(this.token, JSBI.subtract(this.raw, other.raw));
   }

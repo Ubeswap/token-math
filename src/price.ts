@@ -1,8 +1,8 @@
 import invariant from "tiny-invariant";
+
 import { Rounding } from "./constants";
 import { Fraction, NumberFormat } from "./fraction";
 import { Token } from "./token";
-
 import { TokenAmount } from "./tokenAmount";
 import { BigintIsh, makeDecimalMultiplier, parseBigintIsh } from "./utils";
 
@@ -36,7 +36,7 @@ export class Price<T extends Token<T>> extends Fraction {
     return super.multiply(this.scalar);
   }
 
-  public invert(): Price<T> {
+  public override invert(): Price<T> {
     return new Price(
       this.quoteCurrency,
       this.baseCurrency,
@@ -45,7 +45,7 @@ export class Price<T extends Token<T>> extends Fraction {
     );
   }
 
-  public multiply(other: Price<T>): Price<T> {
+  public override multiply(other: Price<T>): Price<T> {
     invariant(this.quoteCurrency.equals(other.baseCurrency), "TOKEN");
     const fraction = super.multiply(other);
     return new Price(
@@ -65,7 +65,7 @@ export class Price<T extends Token<T>> extends Fraction {
     );
   }
 
-  public toSignificant(
+  public override toSignificant(
     significantDigits = 6,
     format?: NumberFormat,
     rounding?: Rounding
@@ -73,7 +73,7 @@ export class Price<T extends Token<T>> extends Fraction {
     return this.adjusted.toSignificant(significantDigits, format, rounding);
   }
 
-  public toFixed(
+  public override toFixed(
     decimalPlaces = 4,
     format?: NumberFormat,
     rounding?: Rounding
