@@ -20,6 +20,9 @@ export class Percent extends Fraction {
    */
   public readonly isPercent: true = true;
 
+  public static override readonly ZERO: Percent = new Percent(0);
+  public static override readonly ONE: Percent = new Percent(1);
+
   /**
    * Parses a {@link Percent} from a float.
    * @param number Number to parse. (100% is 1.00)
