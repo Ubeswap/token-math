@@ -66,7 +66,7 @@ export class Percent extends Fraction {
   }
 
   /**
-   * Returns true if the other object is a {@link Fraction}.
+   * Returns true if the other object is a {@link Percent}.
    *
    * @param other
    * @returns
