@@ -2,7 +2,7 @@ import JSBI from "jsbi";
 
 import { Rounding } from "./constants";
 import { Fraction, NumberFormat } from "./fraction";
-import { BigintIsh } from "./utils";
+import { BigintIsh, computeAPY } from "./utils";
 
 const ONE_HUNDRED = new Fraction(JSBI.BigInt(100));
 
@@ -96,5 +96,14 @@ export class Percent extends Fraction {
       Fraction.isFraction(other) &&
       (other as unknown as Record<string, unknown>)?.isPercent === true
     );
+  }
+
+  /**
+   * Compounds this percentage `periods` times.
+   * @param periods Defaults to 365 (daily APY)
+   * @returns
+   */
+  public compoundedRate(periods = 365): Percent | null {
+    return computeAPY(this, periods);
   }
 }
