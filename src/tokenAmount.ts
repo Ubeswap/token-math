@@ -3,11 +3,13 @@ import { default as JSBI } from "jsbi";
 import { default as invariant } from "tiny-invariant";
 
 import { MAX_U64, MAX_U256, Rounding, ZERO } from "./constants.js";
-import { formatBig, NumberFormat } from "./format.js";
+import type { NumberFormat } from "./format.js";
+import { formatBig } from "./format.js";
 import { Fraction } from "./fraction.js";
 import { Percent } from "./percent.js";
-import { Token } from "./token.js";
-import { BigintIsh, makeDecimalMultiplier, parseBigintIsh } from "./utils.js";
+import type { Token } from "./token.js";
+import type { BigintIsh } from "./utils.js";
+import { makeDecimalMultiplier, parseBigintIsh } from "./utils.js";
 
 /**
  * Gets the separator of the provided locale.

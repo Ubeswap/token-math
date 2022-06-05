@@ -1,11 +1,12 @@
 import { default as invariant } from "tiny-invariant";
 
-import { Rounding } from "./constants.js";
-import { NumberFormat } from "./format.js";
+import type { Rounding } from "./constants.js";
+import type { NumberFormat } from "./format.js";
 import { Fraction } from "./fraction.js";
-import { Token } from "./token.js";
-import { TokenAmount } from "./tokenAmount.js";
-import { BigintIsh, makeDecimalMultiplier, parseBigintIsh } from "./utils.js";
+import type { Token } from "./token.js";
+import type { TokenAmount } from "./tokenAmount.js";
+import type { BigintIsh } from "./utils.js";
+import { makeDecimalMultiplier, parseBigintIsh } from "./utils.js";
 
 export abstract class Price<T extends Token<T>> extends Fraction {
   readonly baseCurrency: T; // input i.e. denominator
