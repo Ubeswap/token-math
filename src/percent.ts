@@ -66,7 +66,7 @@ export class Percent extends Fraction implements PercentObject {
   }
 
   /**
-   * JSON representation of the {@link Fraction}.
+   * JSON representation of the {@link Percent}.
    */
   override toJSON(): PercentObject {
     return {
