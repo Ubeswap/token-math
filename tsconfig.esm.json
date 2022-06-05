@@ -1,8 +1,8 @@
 {
-  "extends": "./tsconfig.build.json",
+  "extends": "@saberhq/tsconfig/tsconfig.module.json",
+  "include": ["src/"],
+  "exclude": ["**/*.test.ts"],
   "compilerOptions": {
-    "module": "ES2020",
-    "moduleResolution": "node16",
     "outDir": "dist/esm/"
   }
 }
