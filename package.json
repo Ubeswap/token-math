@@ -49,6 +49,7 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.3",
+    "@saberhq/tsconfig": "^1.13.25",
     "@types/bn.js": "^5.1.0",
     "@types/jest": "^28.1.1",
     "@typescript-eslint/eslint-plugin": "^5.27.0",

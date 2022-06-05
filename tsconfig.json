@@ -1,24 +1,9 @@
 {
+  "extends": "@saberhq/tsconfig/tsconfig.module.json",
   "include": ["src/", "jest.config.mjs", ".eslintrc.cjs"],
   "compilerOptions": {
-    "target": "ES2019",
-    "module": "ES2020",
-    "moduleResolution": "node16",
-    "lib": ["ES2019"],
-
-    "strict": true,
-    "noImplicitOverride": true,
-    "noUncheckedIndexedAccess": true,
-    "forceConsistentCasingInFileNames": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "importHelpers": true,
+    "skipLibCheck": false,
+    "types": ["jest"],
     "noEmit": true
   }
 }

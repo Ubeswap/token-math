@@ -1161,6 +1161,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@saberhq/tsconfig@npm:^1.13.25":
+  version: 1.13.25
+  resolution: "@saberhq/tsconfig@npm:1.13.25"
+  checksum: e98f9e9613ce4bb52eb4ae25eea1a3b152858f6f66d33b1ffb3ad52b68a64dc41b877dab1464a3ea1bedac51f141d5786128e49d82c948554e4ddc5951ce1442
+  languageName: node
+  linkType: hard
+
 "@sinclair/typebox@npm:^0.23.3":
   version: 0.23.5
   resolution: "@sinclair/typebox@npm:0.23.5"
@@ -1476,6 +1483,7 @@ __metadata:
   resolution: "@ubeswap/token-math@workspace:."
   dependencies:
     "@rushstack/eslint-patch": ^1.1.3
+    "@saberhq/tsconfig": ^1.13.25
     "@types/big.js": ^6.1.3
     "@types/bn.js": ^5.1.0
     "@types/jest": ^28.1.1

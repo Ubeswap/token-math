@@ -6,9 +6,6 @@
     "module": "CommonJS",
     "moduleResolution": "node",
     "outDir": "dist/cjs/",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
     "noEmit": false
   }
 }
