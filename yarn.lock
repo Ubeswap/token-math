@@ -1193,9 +1193,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@saberhq/eslint-config@npm:^1.13.25":
-  version: 1.13.25
-  resolution: "@saberhq/eslint-config@npm:1.13.25"
+"@saberhq/eslint-config@npm:^1.13.26":
+  version: 1.13.26
+  resolution: "@saberhq/eslint-config@npm:1.13.26"
   dependencies:
     "@typescript-eslint/eslint-plugin": ^5.27.0
     "@typescript-eslint/parser": ^5.27.0
@@ -1208,14 +1208,14 @@ __metadata:
     prettier: ^2.6.2
   peerDependencies:
     eslint: ">=7"
-  checksum: acb12c73d5780ca01db253284c56c9dc2f293530b589b7dae687b071de619665de1647911f38ef19ccd603a3be5b8ec46c2d044f3fc49fa8b9bd97f6a4fd0fae
+  checksum: 97618814c81db7089db97754a8c15c76f71b536ea63a4ba6b7cd24eb0c77b482856c13ea6606325b9428654459c36546967d05c847c46280a97bb6c2fc217fff
   languageName: node
   linkType: hard
 
-"@saberhq/tsconfig@npm:^1.13.25":
-  version: 1.13.25
-  resolution: "@saberhq/tsconfig@npm:1.13.25"
-  checksum: e98f9e9613ce4bb52eb4ae25eea1a3b152858f6f66d33b1ffb3ad52b68a64dc41b877dab1464a3ea1bedac51f141d5786128e49d82c948554e4ddc5951ce1442
+"@saberhq/tsconfig@npm:^1.13.26":
+  version: 1.13.26
+  resolution: "@saberhq/tsconfig@npm:1.13.26"
+  checksum: d702708d2d16182ece6e3df67b6fe9e0cef92ea056ff717a8107c2fc07f8f7a796f98a7828d31951f04ac67ce0150b4a7c30b67b380152d01a1ebfdc5066fc96
   languageName: node
   linkType: hard
 
@@ -1654,8 +1654,8 @@ __metadata:
   dependencies:
     "@jest/types": ^28.1.0
     "@rushstack/eslint-patch": ^1.1.3
-    "@saberhq/eslint-config": ^1.13.25
-    "@saberhq/tsconfig": ^1.13.25
+    "@saberhq/eslint-config": ^1.13.26
+    "@saberhq/tsconfig": ^1.13.26
     "@types/big.js": ^6.1.3
     "@types/bn.js": ^5.1.0
     "@types/eslint": ^8.4.2

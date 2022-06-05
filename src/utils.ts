@@ -6,7 +6,7 @@ import { TEN } from "./constants.js";
 /**
  * Bigint-like number.
  */
-export declare type BigintIsh = JSBI | string | number | bigint | BN;
+export type BigintIsh = JSBI | string | number | bigint | BN;
 
 /**
  * Parses a {@link BigintIsh} into a {@link JSBI}.
