@@ -78,7 +78,8 @@
     "node": ">=10"
   },
   "lint-staged": {
-    "*.{css,html,js,json,jsx,md,sass,scss,ts,tsx,vue,yaml,yml}": "prettier --write"
+    "*.{ts,tsx,cjs,mjs}": "eslint --fix",
+    "*.{css,html,js,json,jsx,md,sass,scss,vue,yaml,yml}": "prettier --write"
   },
   "packageManager": "yarn@3.2.1"
 }
