@@ -3,6 +3,6 @@
   "include": ["src/"],
   "exclude": ["**/*.test.ts"],
   "compilerOptions": {
-    "outDir": "dist/esm/"
+    "outDir": "dist/cjs/"
   }
 }
