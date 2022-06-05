@@ -1,5 +1,6 @@
 import type { Rounding } from "./constants.js";
 import type { NumberFormat } from "./format.js";
+import type { FractionObject } from "./fraction.js";
 import { Fraction } from "./fraction.js";
 import type { BigintIsh } from "./utils.js";
 
@@ -13,7 +14,14 @@ function toPercent(fraction: Fraction): Percent {
   return new Percent(fraction.numerator, fraction.denominator);
 }
 
-export class Percent extends Fraction {
+/**
+ * Serializable representation of a {@link Percent}.
+ */
+export interface PercentObject extends FractionObject {
+  readonly isPercent: true;
+}
+
+export class Percent extends Fraction implements PercentObject {
   /**
    * This boolean prevents a fraction from being interpreted as a Percent
    */
@@ -43,6 +51,35 @@ export class Percent extends Fraction {
   static override fromNumber(number: number, decimals = 10): Percent {
     const frac = Fraction.fromNumber(number, decimals);
     return new Percent(frac.numerator, frac.denominator);
+  }
+
+  /**
+   * Constructs an {@link Percent} from a {@link PercentObject}.
+   * @param other
+   * @returns
+   */
+  static override fromObject(other: PercentObject): Percent {
+    if (other instanceof Percent) {
+      return other;
+    }
+    return toPercent(Fraction.fromObject(other));
+  }
+
+  /**
+   * JSON representation of the {@link Fraction}.
+   */
+  override toJSON(): PercentObject {
+    return {
+      ...super.toJSON(),
+      isPercent: true,
+    };
+  }
+
+  /**
+   * Creates a {@link Percent} from a {@link Fraction}.
+   */
+  static fromFraction(fraction: Fraction): Percent {
+    return toPercent(fraction);
   }
 
   /**

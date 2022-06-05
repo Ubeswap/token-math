@@ -30,13 +30,48 @@ const tryParseFraction = (fractionish: BigintIsh | Fraction): Fraction => {
 };
 
 /**
- * Number with an integer numerator and denominator.
+ * Interface representing a Fraction.
  */
-export class Fraction {
+export interface FractionObject {
   /**
    * This boolean checks to see if this is actually a {@link Fraction}.
    */
+  readonly isFraction: true;
+
+  /**
+   * Fraction numerator.
+   */
+  readonly numeratorStr: string;
+
+  /**
+   * Fraction denominator.
+   */
+  readonly denominatorStr: string;
+}
+
+/**
+ * Creates a {@link Fraction} from a {@link FractionObject}.
+ * @param param0
+ * @returns
+ */
+export const fractionFromObject = ({
+  numeratorStr,
+  denominatorStr,
+}: FractionObject): Fraction => {
+  return new Fraction(numeratorStr, denominatorStr);
+};
+
+/**
+ * Number with an integer numerator and denominator.
+ */
+export class Fraction implements FractionObject {
   readonly isFraction: true = true;
+  get numeratorStr(): string {
+    return this.numerator.toString();
+  }
+  get denominatorStr(): string {
+    return this.numerator.toString();
+  }
 
   readonly numerator: JSBI;
   readonly denominator: JSBI;
@@ -47,6 +82,29 @@ export class Fraction {
   constructor(numerator: BigintIsh, denominator: BigintIsh = ONE) {
     this.numerator = parseBigintIsh(numerator);
     this.denominator = parseBigintIsh(denominator);
+  }
+
+  /**
+   * Ensures the other object is of this {@link Fraction} type.
+   * @param other
+   * @returns
+   */
+  static fromObject(other: FractionObject): Fraction {
+    if (other instanceof Fraction) {
+      return other;
+    }
+    return fractionFromObject(other);
+  }
+
+  /**
+   * JSON representation of the {@link Fraction}.
+   */
+  toJSON(): FractionObject {
+    return {
+      isFraction: true,
+      numeratorStr: this.numerator.toString(),
+      denominatorStr: this.denominator.toString(),
+    };
   }
 
   /**
