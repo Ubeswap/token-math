@@ -2,6 +2,7 @@
   "extends": "@saberhq/tsconfig/tsconfig.module.json",
   "include": ["src/", "jest.config.mjs", ".eslintrc.cjs"],
   "compilerOptions": {
+    "lib": ["ES2019", "DOM"],
     "skipLibCheck": true,
     "types": ["jest"],
     "noEmit": true
