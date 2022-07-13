@@ -2,7 +2,7 @@
   "extends": "@saberhq/tsconfig/tsconfig.module.json",
   "include": ["src/", "jest.config.mjs", ".eslintrc.cjs"],
   "compilerOptions": {
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "types": ["jest"],
     "noEmit": true
   }
