@@ -3,6 +3,7 @@
   "include": ["src/"],
   "exclude": ["**/*.test.ts"],
   "compilerOptions": {
+    "lib": ["ES2019", "DOM"],
     "outDir": "dist/cjs/"
   }
 }
