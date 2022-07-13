@@ -44,7 +44,6 @@
     "tslib": "^2.4.0"
   },
   "peerDependencies": {
-    "bn.js": "^5.2.0",
     "jsbi": "^3 || ^4"
   },
   "devDependencies": {
