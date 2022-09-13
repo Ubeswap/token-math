@@ -25,7 +25,7 @@ export class Percent extends Fraction implements PercentObject {
   /**
    * This boolean prevents a fraction from being interpreted as a Percent
    */
-  readonly isPercent: true = true;
+  readonly isPercent = true as const;
 
   /**
    * Zero percent.

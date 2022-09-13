@@ -65,7 +65,7 @@ export const fractionFromObject = ({
  * Number with an integer numerator and denominator.
  */
 export class Fraction implements FractionObject {
-  readonly isFraction: true = true;
+  readonly isFraction = true as const;
   get numeratorStr(): string {
     return this.numerator.toString();
   }
