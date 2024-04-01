@@ -6,7 +6,10 @@ import { TokenAmount } from "./tokenAmount.js";
 import type { BigintIsh } from "./utils.js";
 
 class MyToken implements Token<MyToken> {
-  constructor(readonly symbol: string, readonly decimals: number) {}
+  constructor(
+    readonly symbol: string,
+    readonly decimals: number,
+  ) {}
 
   equals(other: MyToken): boolean {
     return this.symbol === other.symbol;
@@ -28,13 +31,13 @@ class MyPrice extends Price<MyToken> {
     baseCurrency: MyToken,
     quoteCurrency: MyToken,
     denominator: BigintIsh,
-    numerator: BigintIsh
+    numerator: BigintIsh,
   ): this {
     return new MyPrice(
       baseCurrency,
       quoteCurrency,
       numerator,
-      denominator
+      denominator,
     ) as this;
   }
 }

@@ -40,10 +40,10 @@ export function parseBigintIsh(bigintIsh: BigintIsh): JSBI {
   return bigintIsh instanceof JSBI
     ? bigintIsh
     : typeof bigintIsh === "string" || typeof bigintIsh === "number"
-    ? JSBI.BigInt(bigintIsh)
-    : typeof bigintIsh === "bigint" || isBN(bigintIsh)
-    ? JSBI.BigInt(bigintIsh.toString())
-    : JSBI.BigInt(bigintIsh);
+      ? JSBI.BigInt(bigintIsh)
+      : typeof bigintIsh === "bigint" || isBN(bigintIsh)
+        ? JSBI.BigInt(bigintIsh.toString())
+        : JSBI.BigInt(bigintIsh);
 }
 
 const decimalMultipliersCache: Record<number, JSBI> = {};
@@ -63,6 +63,6 @@ export const makeDecimalMultiplier = (decimals: number): JSBI => {
   }
   return (decimalMultipliersCache[decimals] = JSBI.exponentiate(
     TEN,
-    JSBI.BigInt(decimals)
+    JSBI.BigInt(decimals),
   ));
 };

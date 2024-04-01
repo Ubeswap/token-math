@@ -5,6 +5,7 @@
  *  MIT Licence
  */
 
+import type { RoundingMode } from "big.js";
 import { default as Big } from "big.js";
 import { default as Decimal } from "decimal.js-light";
 import { default as invariant } from "tiny-invariant";
@@ -54,7 +55,9 @@ export interface NumberFormat {
 const formatNum = (
   num: {
     toString(): string;
-    toFixed: (places: number, rounding: number) => string;
+    toFixed:
+      | ((places: number, rounding: number) => string)
+      | ((places: number, rounding?: RoundingMode) => string);
   },
   isNegative: boolean,
   roundingMethod: "fixed" | "significant",
@@ -64,7 +67,7 @@ const formatNum = (
     groupSeparator = DEFAULT_NUMBER_FORMAT.groupSeparator,
     groupSize = DEFAULT_NUMBER_FORMAT.groupSize,
     rounding = DEFAULT_NUMBER_FORMAT.rounding,
-  }: NumberFormat = DEFAULT_NUMBER_FORMAT
+  }: NumberFormat = DEFAULT_NUMBER_FORMAT,
 ) => {
   const decInternal = num as {
     e?: unknown;
@@ -76,9 +79,9 @@ const formatNum = (
   const [integerPart, fractionPart] = num
     .toFixed(
       decimalPlaces,
-      roundingMethod === "fixed"
+      (roundingMethod === "fixed"
         ? toFixedRounding[rounding]
-        : toSignificantRounding[rounding]
+        : toSignificantRounding[rounding]) as 0 | 1 | 2 | 3,
     )
     .split(".");
 
@@ -159,7 +162,7 @@ const formatNum = (
 export const formatDecimal = (
   dec: Decimal,
   decimalPlaces: number,
-  fmt: NumberFormat = DEFAULT_NUMBER_FORMAT
+  fmt: NumberFormat = DEFAULT_NUMBER_FORMAT,
 ) => {
   return formatNum(dec, dec.isNegative(), "significant", decimalPlaces, fmt);
 };
@@ -214,7 +217,7 @@ export const formatDecimal = (
 export const formatBig = (
   big: Big,
   decimalPlaces: number,
-  fmt: NumberFormat = DEFAULT_NUMBER_FORMAT
+  fmt: NumberFormat = DEFAULT_NUMBER_FORMAT,
 ) => {
   return formatNum(big, big.s === -1, "fixed", decimalPlaces, fmt);
 };

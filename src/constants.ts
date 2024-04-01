@@ -23,5 +23,5 @@ export enum Rounding {
 
 export const MAX_U64 = JSBI.BigInt("0xffffffffffffffff");
 export const MAX_U256 = JSBI.BigInt(
-  "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+  "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
 );

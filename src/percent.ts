@@ -117,7 +117,7 @@ export class Percent extends Fraction implements PercentObject {
   override toSignificant(
     significantDigits = 5,
     format?: NumberFormat,
-    rounding?: Rounding
+    rounding?: Rounding,
   ): string {
     return super
       .multiply(ONE_HUNDRED)
@@ -127,7 +127,7 @@ export class Percent extends Fraction implements PercentObject {
   override toFixed(
     decimalPlaces = 2,
     format?: NumberFormat,
-    rounding?: Rounding
+    rounding?: Rounding,
   ): string {
     return super.multiply(ONE_HUNDRED).toFixed(decimalPlaces, format, rounding);
   }

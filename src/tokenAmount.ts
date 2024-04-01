@@ -22,7 +22,7 @@ import { makeDecimalMultiplier, parseBigintIsh } from "./utils.js";
  */
 export const getSeparator = (
   separatorType: "decimal" | "group",
-  locale?: string
+  locale?: string,
 ) => {
   const numberWithDecimalSeparator = 1000.1;
   return Intl.NumberFormat(locale)
@@ -84,7 +84,7 @@ export const parseAmountFromString = <Tk extends Token<Tk>>(
   token: Tk,
   uiAmount: string,
   decimalSeparator = DEFAULT_DECIMAL_SEPARATOR,
-  groupSeparator = DEFAULT_GROUP_SEPARATOR
+  groupSeparator = DEFAULT_GROUP_SEPARATOR,
 ): JSBI => {
   const parts = uiAmount.split(decimalSeparator);
   if (parts.length === 0) {
@@ -97,12 +97,12 @@ export const parseAmountFromString = <Tk extends Token<Tk>>(
   const fraction = fractionRaw
     ? JSBI.BigInt(
         fractionRaw.slice(0, token.decimals) +
-          Array(token.decimals).fill("0").slice(fractionRaw.length).join("")
+          Array(token.decimals).fill("0").slice(fractionRaw.length).join(""),
       )
     : ZERO;
   const combined = JSBI.add(
     JSBI.multiply(whole, makeDecimalMultiplier(token.decimals)),
-    fraction
+    fraction,
   );
   return combined;
 };
@@ -188,7 +188,7 @@ export abstract class TokenAmount<T extends Token<T>> extends Fraction {
   constructor(
     readonly token: T,
     amount: BigintIsh,
-    validate?: (value: JSBI) => void
+    validate?: (value: JSBI) => void,
   ) {
     const parsedAmount = parseBigintIsh(amount);
     validate?.(parsedAmount);
@@ -215,7 +215,7 @@ export abstract class TokenAmount<T extends Token<T>> extends Fraction {
   override toSignificant(
     significantDigits = 6,
     format?: NumberFormat,
-    rounding: Rounding = Rounding.ROUND_DOWN
+    rounding: Rounding = Rounding.ROUND_DOWN,
   ): string {
     return super.toSignificant(significantDigits, format, rounding);
   }
@@ -223,7 +223,7 @@ export abstract class TokenAmount<T extends Token<T>> extends Fraction {
   override toFixed(
     decimalPlaces: number = this.token.decimals,
     format?: NumberFormat,
-    rounding: Rounding = Rounding.ROUND_DOWN
+    rounding: Rounding = Rounding.ROUND_DOWN,
   ): string {
     invariant(decimalPlaces <= this.token.decimals, "DECIMALS");
     return super.toFixed(decimalPlaces, format, rounding);
@@ -233,14 +233,14 @@ export abstract class TokenAmount<T extends Token<T>> extends Fraction {
     return formatBig(
       new Big(this.numerator.toString()).div(this.denominator.toString()),
       this.token.decimals,
-      format
+      format,
     );
   }
 
   override add(other: this): this {
     invariant(
       this.token.equals(other.token),
-      `add token mismatch: ${this.token.toString()} !== ${other.token.toString()}`
+      `add token mismatch: ${this.token.toString()} !== ${other.token.toString()}`,
     );
     return this.withAmount(JSBI.add(this.raw, other.raw));
   }
@@ -248,7 +248,7 @@ export abstract class TokenAmount<T extends Token<T>> extends Fraction {
   override subtract(other: this): this {
     invariant(
       this.token.equals(other.token),
-      `subtract token mismatch: ${this.token.toString()} !== ${other.token.toString()}`
+      `subtract token mismatch: ${this.token.toString()} !== ${other.token.toString()}`,
     );
     return this.withAmount(JSBI.subtract(this.raw, other.raw));
   }
@@ -261,7 +261,7 @@ export abstract class TokenAmount<T extends Token<T>> extends Fraction {
   percentOf(other: this): Percent {
     invariant(
       this.token.equals(other.token),
-      `percentOf token mismatch: ${this.token.toString()} !== ${other.token.toString()}`
+      `percentOf token mismatch: ${this.token.toString()} !== ${other.token.toString()}`,
     );
     const frac = this.divide(other);
     return new Percent(frac.numerator, frac.denominator);
@@ -310,7 +310,7 @@ export abstract class TokenAmount<T extends Token<T>> extends Fraction {
         groupSeparator: DEFAULT_GROUP_SEPARATOR,
         groupSize: 3,
         decimalSeparator: DEFAULT_DECIMAL_SEPARATOR,
-      })
+      }),
     )} ${this.token.symbol}`;
   }
 
@@ -341,7 +341,7 @@ export abstract class TokenAmount<T extends Token<T>> extends Fraction {
    * @returns
    */
   static isTokenAmount<T extends Token<T>, A extends TokenAmount<T>>(
-    other: unknown
+    other: unknown,
   ): other is A {
     return (
       Fraction.isFraction(other) &&
