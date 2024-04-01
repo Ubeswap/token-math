@@ -251,6 +251,7 @@ export class Fraction implements FractionObject {
     invariant(significantDigits > 0, `${significantDigits} is not positive.`);
 
     return this.asNumber.toLocaleString("en-US", {
+      useGrouping: false,
       minimumSignificantDigits: significantDigits,
       maximumSignificantDigits: significantDigits,
     });
