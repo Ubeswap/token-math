@@ -1,5 +1,3 @@
-import { default as JSBI } from "jsbi";
-
 import { TEN } from "./constants.js";
 
 /**
@@ -29,40 +27,35 @@ export const isBN = (num: BNLike) => {
 /**
  * Bigint-like number.
  */
-export type BigintIsh = JSBI | string | number | bigint | BNLike;
+export type BigintIsh = string | number | bigint | BNLike;
 
 /**
  * Parses a {@link BigintIsh} into a {@link JSBI}.
  * @param bigintIsh
  * @returns
  */
-export function parseBigintIsh(bigintIsh: BigintIsh): JSBI {
-  return bigintIsh instanceof JSBI
+export function parseBigintIsh(bigintIsh: BigintIsh): bigint {
+  return typeof bigintIsh === "bigint"
     ? bigintIsh
     : typeof bigintIsh === "string" || typeof bigintIsh === "number"
-      ? JSBI.BigInt(bigintIsh)
-      : typeof bigintIsh === "bigint" || isBN(bigintIsh)
-        ? JSBI.BigInt(bigintIsh.toString())
-        : JSBI.BigInt(bigintIsh);
+      ? BigInt(bigintIsh)
+      : BigInt(bigintIsh.toString());
 }
 
-const decimalMultipliersCache: Record<number, JSBI> = {};
+const decimalMultipliersCache: Record<number, bigint> = {};
 
 /**
  * Creates the multiplier for an amount of decimals.
  * @param decimals
  * @returns
  */
-export const makeDecimalMultiplier = (decimals: number): JSBI => {
+export const makeDecimalMultiplier = (decimals: number): bigint => {
   const cached = decimalMultipliersCache[decimals];
   if (cached) {
     return cached;
   }
   if (decimals <= 18) {
-    return (decimalMultipliersCache[decimals] = JSBI.BigInt(10 ** decimals));
+    return (decimalMultipliersCache[decimals] = BigInt(10 ** decimals));
   }
-  return (decimalMultipliersCache[decimals] = JSBI.exponentiate(
-    TEN,
-    JSBI.BigInt(decimals),
-  ));
+  return (decimalMultipliersCache[decimals] = TEN ** BigInt(decimals));
 };

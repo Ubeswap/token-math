@@ -1,5 +1,4 @@
 import { default as Big } from "big.js";
-import { default as JSBI } from "jsbi";
 import { default as invariant } from "tiny-invariant";
 
 import { MAX_U64, MAX_U256, Rounding, ZERO } from "./constants.js";
@@ -85,25 +84,22 @@ export const parseAmountFromString = <Tk extends Token<Tk>>(
   uiAmount: string,
   decimalSeparator = DEFAULT_DECIMAL_SEPARATOR,
   groupSeparator = DEFAULT_GROUP_SEPARATOR,
-): JSBI => {
+): bigint => {
   const parts = uiAmount.split(decimalSeparator);
   if (parts.length === 0) {
     throw new Error("empty number");
   }
   const [wholeRaw, fractionRaw] = parts;
   const whole = wholeRaw
-    ? JSBI.BigInt(wholeRaw.split(groupSeparator).join(""))
+    ? BigInt(wholeRaw.split(groupSeparator).join(""))
     : ZERO;
   const fraction = fractionRaw
-    ? JSBI.BigInt(
+    ? BigInt(
         fractionRaw.slice(0, token.decimals) +
           Array(token.decimals).fill("0").slice(fractionRaw.length).join(""),
       )
     : ZERO;
-  const combined = JSBI.add(
-    JSBI.multiply(whole, makeDecimalMultiplier(token.decimals)),
-    fraction,
-  );
+  const combined = whole * makeDecimalMultiplier(token.decimals) + fraction;
   return combined;
 };
 
@@ -111,7 +107,7 @@ export const parseAmountFromString = <Tk extends Token<Tk>>(
  * Thrown when a token amount overflows.
  */
 export class TokenAmountOverflow extends RangeError {
-  constructor(type: string, amount: JSBI) {
+  constructor(type: string, amount: bigint) {
     super(`Token amount overflows ${type}: ${amount.toString()}`);
   }
 }
@@ -120,7 +116,7 @@ export class TokenAmountOverflow extends RangeError {
  * Thrown when a token amount underflows.
  */
 export class TokenAmountUnderflow extends RangeError {
-  constructor(amount: JSBI) {
+  constructor(amount: bigint) {
     super(`Token amount must be greater than zero: ${amount.toString()}`);
   }
 }
@@ -129,11 +125,11 @@ export class TokenAmountUnderflow extends RangeError {
  * Validates that a number falls within the range of u64.
  * @param value
  */
-export function validateU64(value: JSBI): void {
-  if (!JSBI.greaterThanOrEqual(value, ZERO)) {
+export function validateU64(value: bigint): void {
+  if (!(value >= ZERO)) {
     throw new TokenAmountUnderflow(value);
   }
-  if (!JSBI.lessThanOrEqual(value, MAX_U64)) {
+  if (!(value <= MAX_U64)) {
     throw new TokenAmountOverflow("u64", value);
   }
 }
@@ -142,11 +138,11 @@ export function validateU64(value: JSBI): void {
  * Validates that a number falls within the range of u256.
  * @param value
  */
-export function validateU256(value: JSBI): void {
-  if (!JSBI.greaterThanOrEqual(value, ZERO)) {
+export function validateU256(value: bigint): void {
+  if (!(value >= ZERO)) {
     throw new TokenAmountUnderflow(value);
   }
-  if (!JSBI.lessThanOrEqual(value, MAX_U256)) {
+  if (!(value <= MAX_U256)) {
     throw new TokenAmountOverflow("u256", value);
   }
 }
@@ -188,7 +184,7 @@ export abstract class TokenAmount<T extends Token<T>> extends Fraction {
   constructor(
     readonly token: T,
     amount: BigintIsh,
-    validate?: (value: JSBI) => void,
+    validate?: (value: bigint) => void,
   ) {
     const parsedAmount = parseBigintIsh(amount);
     validate?.(parsedAmount);
@@ -208,16 +204,12 @@ export abstract class TokenAmount<T extends Token<T>> extends Fraction {
     return this.new(this.token, amount);
   }
 
-  get raw(): JSBI {
+  get raw(): bigint {
     return this.numerator;
   }
 
-  override toSignificant(
-    significantDigits = 6,
-    format?: NumberFormat,
-    rounding: Rounding = Rounding.ROUND_DOWN,
-  ): string {
-    return super.toSignificant(significantDigits, format, rounding);
+  override toSignificant(significantDigits = 6): string {
+    return super.toSignificant(significantDigits);
   }
 
   override toFixed(
@@ -242,7 +234,7 @@ export abstract class TokenAmount<T extends Token<T>> extends Fraction {
       this.token.equals(other.token),
       `add token mismatch: ${this.token.toString()} !== ${other.token.toString()}`,
     );
-    return this.withAmount(JSBI.add(this.raw, other.raw));
+    return this.withAmount(this.raw + other.raw);
   }
 
   override subtract(other: this): this {
@@ -250,7 +242,7 @@ export abstract class TokenAmount<T extends Token<T>> extends Fraction {
       this.token.equals(other.token),
       `subtract token mismatch: ${this.token.toString()} !== ${other.token.toString()}`,
     );
-    return this.withAmount(JSBI.subtract(this.raw, other.raw));
+    return this.withAmount(this.raw - other.raw);
   }
 
   /**

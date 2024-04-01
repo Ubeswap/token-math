@@ -1,5 +1,3 @@
-import { default as JSBI } from "jsbi";
-
 import { Price } from "./price.js";
 import type { Token } from "./token.js";
 import { TokenAmount } from "./tokenAmount.js";
@@ -60,6 +58,6 @@ describe("Price", () => {
     const myBTCAmount = new MyTokenAmount(btc, 2_00000000);
     const quote = price.quote(myBTCAmount);
 
-    expect(quote.raw.toString()).toEqual(JSBI.BigInt(60_000_000000).toString());
+    expect(quote.raw.toString()).toEqual(BigInt(60_000_000000).toString());
   });
 });

@@ -92,12 +92,8 @@ export abstract class Price<T extends Token<T>> extends Fraction {
     );
   }
 
-  override toSignificant(
-    significantDigits = 6,
-    format?: NumberFormat,
-    rounding?: Rounding,
-  ): string {
-    return this.adjusted.toSignificant(significantDigits, format, rounding);
+  override toSignificant(significantDigits = 6): string {
+    return this.adjusted.toSignificant(significantDigits);
   }
 
   override toFixed(

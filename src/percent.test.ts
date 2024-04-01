@@ -1,5 +1,3 @@
-import { default as JSBI } from "jsbi";
-
 import { Percent } from "./percent.js";
 
 describe("Percent", () => {
@@ -72,16 +70,13 @@ describe("Percent", () => {
     it("returns a fraction", () => {
       const num = 10.0;
       const frac = Percent.fromNumber(num);
-      const expected = new Percent(
-        JSBI.BigInt(10_0000000000),
-        JSBI.BigInt(1_0000000000),
-      );
+      const expected = new Percent(BigInt(10_0000000000), BigInt(1_0000000000));
       expect(frac).toEqual(expected);
     });
     it("rounds down if precision not supported", () => {
       const num = 10.001;
       const frac = Percent.fromNumber(num, 2);
-      const expected = new Percent(JSBI.BigInt(10_00), JSBI.BigInt(1_00));
+      const expected = new Percent(BigInt(10_00), BigInt(1_00));
       expect(frac).toEqual(expected);
     });
   });
