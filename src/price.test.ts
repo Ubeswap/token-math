@@ -1,12 +1,13 @@
-import { default as JSBI } from "jsbi";
-
 import { Price } from "./price.js";
 import type { Token } from "./token.js";
 import { TokenAmount } from "./tokenAmount.js";
 import type { BigintIsh } from "./utils.js";
 
 class MyToken implements Token<MyToken> {
-  constructor(readonly symbol: string, readonly decimals: number) {}
+  constructor(
+    readonly symbol: string,
+    readonly decimals: number,
+  ) {}
 
   equals(other: MyToken): boolean {
     return this.symbol === other.symbol;
@@ -28,13 +29,13 @@ class MyPrice extends Price<MyToken> {
     baseCurrency: MyToken,
     quoteCurrency: MyToken,
     denominator: BigintIsh,
-    numerator: BigintIsh
+    numerator: BigintIsh,
   ): this {
     return new MyPrice(
       baseCurrency,
       quoteCurrency,
       numerator,
-      denominator
+      denominator,
     ) as this;
   }
 }
@@ -57,6 +58,6 @@ describe("Price", () => {
     const myBTCAmount = new MyTokenAmount(btc, 2_00000000);
     const quote = price.quote(myBTCAmount);
 
-    expect(quote.raw.toString()).toEqual(JSBI.BigInt(60_000_000000).toString());
+    expect(quote.raw.toString()).toEqual(BigInt(60_000_000000).toString());
   });
 });

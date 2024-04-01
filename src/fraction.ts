@@ -1,11 +1,9 @@
 import { default as Big } from "big.js";
-import { default as Decimal } from "decimal.js-light";
-import { default as JSBI } from "jsbi";
 import { default as invariant } from "tiny-invariant";
 
 import { ONE, Rounding, ZERO } from "./constants.js";
 import type { NumberFormat } from "./format.js";
-import { formatBig, formatDecimal, toSignificantRounding } from "./format.js";
+import { formatBig } from "./format.js";
 import type { BigintIsh } from "./utils.js";
 import { parseBigintIsh } from "./utils.js";
 
@@ -73,8 +71,8 @@ export class Fraction implements FractionObject {
     return this.numerator.toString();
   }
 
-  readonly numerator: JSBI;
-  readonly denominator: JSBI;
+  readonly numerator: bigint;
+  readonly denominator: bigint;
 
   static readonly ZERO: Fraction = new Fraction(0);
   static readonly ONE: Fraction = new Fraction(1);
@@ -146,18 +144,15 @@ export class Fraction implements FractionObject {
   /**
    * Performs floor division.
    */
-  get quotient(): JSBI {
-    return JSBI.divide(this.numerator, this.denominator);
+  get quotient(): bigint {
+    return this.numerator / this.denominator;
   }
 
   /**
    * Remainder after floor division.
    */
   get remainder(): Fraction {
-    return new Fraction(
-      JSBI.remainder(this.numerator, this.denominator),
-      this.denominator
-    );
+    return new Fraction(this.numerator % this.denominator, this.denominator);
   }
 
   /**
@@ -170,67 +165,63 @@ export class Fraction implements FractionObject {
 
   add(other: Fraction | BigintIsh): Fraction {
     const otherParsed = tryParseFraction(other);
-    if (JSBI.equal(this.denominator, otherParsed.denominator)) {
+    if (this.denominator === otherParsed.denominator) {
       return new Fraction(
-        JSBI.add(this.numerator, otherParsed.numerator),
-        this.denominator
+        this.numerator + otherParsed.numerator,
+        this.denominator,
       );
     }
     return new Fraction(
-      JSBI.add(
-        JSBI.multiply(this.numerator, otherParsed.denominator),
-        JSBI.multiply(otherParsed.numerator, this.denominator)
-      ),
-      JSBI.multiply(this.denominator, otherParsed.denominator)
+      this.numerator * otherParsed.denominator +
+        otherParsed.numerator * this.denominator,
+      this.denominator * otherParsed.denominator,
     );
   }
 
   subtract(other: Fraction | BigintIsh): Fraction {
     const otherParsed = tryParseFraction(other);
-    if (JSBI.equal(this.denominator, otherParsed.denominator)) {
+    if (this.denominator === otherParsed.denominator) {
       return new Fraction(
-        JSBI.subtract(this.numerator, otherParsed.numerator),
-        this.denominator
+        this.numerator - otherParsed.numerator,
+        this.denominator,
       );
     }
     return new Fraction(
-      JSBI.subtract(
-        JSBI.multiply(this.numerator, otherParsed.denominator),
-        JSBI.multiply(otherParsed.numerator, this.denominator)
-      ),
-      JSBI.multiply(this.denominator, otherParsed.denominator)
+      this.numerator * otherParsed.denominator -
+        otherParsed.numerator * this.denominator,
+      this.denominator * otherParsed.denominator,
     );
   }
 
   lessThan(other: Fraction | BigintIsh): boolean {
     const otherParsed = tryParseFraction(other);
-    return JSBI.lessThan(
-      JSBI.multiply(this.numerator, otherParsed.denominator),
-      JSBI.multiply(otherParsed.numerator, this.denominator)
+    return (
+      this.numerator * otherParsed.denominator <
+      otherParsed.numerator * this.denominator
     );
   }
 
   equalTo(other: Fraction | BigintIsh): boolean {
     const otherParsed = tryParseFraction(other);
-    return JSBI.equal(
-      JSBI.multiply(this.numerator, otherParsed.denominator),
-      JSBI.multiply(otherParsed.numerator, this.denominator)
+    return (
+      this.numerator * otherParsed.denominator ===
+      otherParsed.numerator * this.denominator
     );
   }
 
   greaterThan(other: Fraction | BigintIsh): boolean {
     const otherParsed = tryParseFraction(other);
-    return JSBI.greaterThan(
-      JSBI.multiply(this.numerator, otherParsed.denominator),
-      JSBI.multiply(otherParsed.numerator, this.denominator)
+    return (
+      this.numerator * otherParsed.denominator >
+      otherParsed.numerator * this.denominator
     );
   }
 
   multiply(other: Fraction | BigintIsh): Fraction {
     const otherParsed = tryParseFraction(other);
     return new Fraction(
-      JSBI.multiply(this.numerator, otherParsed.numerator),
-      JSBI.multiply(this.denominator, otherParsed.denominator)
+      this.numerator * otherParsed.numerator,
+      this.denominator * otherParsed.denominator,
     );
   }
 
@@ -240,8 +231,8 @@ export class Fraction implements FractionObject {
   divide(other: Fraction | BigintIsh): Fraction {
     const otherParsed = tryParseFraction(other);
     return new Fraction(
-      JSBI.multiply(this.numerator, otherParsed.denominator),
-      JSBI.multiply(this.denominator, otherParsed.numerator)
+      this.numerator * otherParsed.denominator,
+      this.denominator * otherParsed.numerator,
     );
   }
 
@@ -252,45 +243,35 @@ export class Fraction implements FractionObject {
    * @param rounding
    * @returns
    */
-  toSignificant(
-    significantDigits: number,
-    format: NumberFormat = { groupSeparator: "" },
-    rounding: Rounding = Rounding.ROUND_HALF_UP
-  ): string {
+  toSignificant(significantDigits: number): string {
     invariant(
       Number.isInteger(significantDigits),
-      `${significantDigits} is not an integer.`
+      `${significantDigits} is not an integer.`,
     );
     invariant(significantDigits > 0, `${significantDigits} is not positive.`);
 
-    Decimal.set({
-      precision: significantDigits + 1,
-      rounding: toSignificantRounding[rounding],
-    });
-    const quotient = new Decimal(this.numerator.toString())
-      .div(this.denominator.toString())
-      .toSignificantDigits(significantDigits);
-    return formatDecimal(quotient, quotient.decimalPlaces(), {
-      ...format,
-      rounding,
+    return this.asNumber.toLocaleString("en-US", {
+      useGrouping: false,
+      minimumSignificantDigits: significantDigits,
+      maximumSignificantDigits: significantDigits,
     });
   }
 
   toFixed(
     decimalPlaces: number,
     format: NumberFormat = { groupSeparator: "" },
-    rounding: Rounding = Rounding.ROUND_HALF_UP
+    rounding: Rounding = Rounding.ROUND_HALF_UP,
   ): string {
     invariant(
       Number.isInteger(decimalPlaces),
-      `${decimalPlaces} is not an integer.`
+      `${decimalPlaces} is not an integer.`,
     );
     invariant(decimalPlaces >= 0, `${decimalPlaces} is negative.`);
 
     return formatBig(
       new Big(this.numerator.toString()).div(this.denominator.toString()),
       decimalPlaces,
-      { ...format, rounding }
+      { ...format, rounding },
     );
   }
 
@@ -305,15 +286,16 @@ export class Fraction implements FractionObject {
    * Gets the value of this {@link Fraction} as a number.
    */
   get asNumber(): number {
-    if (JSBI.equal(this.denominator, ZERO)) {
-      return JSBI.greaterThan(this.numerator, ZERO)
+    if (this.denominator === ZERO) {
+      return this.numerator > ZERO
         ? Number.POSITIVE_INFINITY
-        : JSBI.lessThan(this.numerator, ZERO)
-        ? Number.NEGATIVE_INFINITY
-        : Number.NaN;
+        : this.numerator < ZERO
+          ? Number.NEGATIVE_INFINITY
+          : Number.NaN;
     }
     const result =
-      JSBI.toNumber(this.numerator) / JSBI.toNumber(this.denominator);
+      parseFloat(this.numerator.toString()) /
+      parseFloat(this.denominator.toString());
     if (!Number.isNaN(result)) {
       return result;
     }
@@ -325,7 +307,7 @@ export class Fraction implements FractionObject {
    * @returns
    */
   isZero(): boolean {
-    return JSBI.EQ(this.numerator, ZERO) && JSBI.NE(this.denominator, ZERO);
+    return this.numerator === ZERO && this.denominator !== ZERO;
   }
 
   /**

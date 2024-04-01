@@ -5,17 +5,11 @@
  *  MIT Licence
  */
 
+import type { RoundingMode } from "big.js";
 import { default as Big } from "big.js";
-import { default as Decimal } from "decimal.js-light";
 import { default as invariant } from "tiny-invariant";
 
 import { Rounding } from "./constants.js";
-
-export const toSignificantRounding = {
-  [Rounding.ROUND_DOWN]: Decimal.ROUND_DOWN,
-  [Rounding.ROUND_HALF_UP]: Decimal.ROUND_HALF_UP,
-  [Rounding.ROUND_UP]: Decimal.ROUND_UP,
-};
 
 const toFixedRounding = {
   [Rounding.ROUND_DOWN]: Big.roundDown,
@@ -54,17 +48,18 @@ export interface NumberFormat {
 const formatNum = (
   num: {
     toString(): string;
-    toFixed: (places: number, rounding: number) => string;
+    toFixed:
+      | ((places: number, rounding: number) => string)
+      | ((places: number, rounding?: RoundingMode) => string);
   },
   isNegative: boolean,
-  roundingMethod: "fixed" | "significant",
   decimalPlaces: number,
   {
     decimalSeparator = DEFAULT_NUMBER_FORMAT.decimalSeparator,
     groupSeparator = DEFAULT_NUMBER_FORMAT.groupSeparator,
     groupSize = DEFAULT_NUMBER_FORMAT.groupSize,
     rounding = DEFAULT_NUMBER_FORMAT.rounding,
-  }: NumberFormat = DEFAULT_NUMBER_FORMAT
+  }: NumberFormat = DEFAULT_NUMBER_FORMAT,
 ) => {
   const decInternal = num as {
     e?: unknown;
@@ -74,12 +69,7 @@ const formatNum = (
   }
 
   const [integerPart, fractionPart] = num
-    .toFixed(
-      decimalPlaces,
-      roundingMethod === "fixed"
-        ? toFixedRounding[rounding]
-        : toSignificantRounding[rounding]
-    )
+    .toFixed(decimalPlaces, toFixedRounding[rounding])
     .split(".");
 
   invariant(integerPart);
@@ -156,65 +146,10 @@ const formatNum = (
  *  [fmt] {Object} A format object.
  *
  */
-export const formatDecimal = (
-  dec: Decimal,
-  decimalPlaces: number,
-  fmt: NumberFormat = DEFAULT_NUMBER_FORMAT
-) => {
-  return formatNum(dec, dec.isNegative(), "significant", decimalPlaces, fmt);
-};
-
-/*
- *  Returns a string representing the value of this big number in fixed-point notation to `dp`
- *  decimal places using rounding mode `rm`, and formatted according to the properties of the
- * `fmt`, `this.format` and `this.constructor.format` objects, in that order of precedence.
- *
- *  Example:
- *
- *  x = new Decimal('123456789.987654321')
- *
- *  // Add a format object to the constructor...
- *  Decimal.format = {
- *    decimalSeparator: '.',
- *    groupSeparator: ',',
- *    groupSize: 3,
- *    secondaryGroupSize: 0,
- *    fractionGroupSeparator: '',     // '\xA0' non-breaking space
- *    fractionGroupSize : 0
- *  }
- *
- *  x.toFormat();                // 123,456,789.987654321
- *  x.toFormat(2, 1);            // 123,456,789.98
- *
- *  // And/or add a format object to the big number itself...
- *  x.format = {
- *    decimalSeparator: ',',
- *    groupSeparator: '',
- *  }
- *
- *  x.toFormat();                // 123456789,987654321
- *
- *  format = {
- *    decimalSeparator: '.',
- *    groupSeparator: ' ',
- *    groupSize: 3,
- *    fractionGroupSeparator: ' ',     // '\xA0' non-breaking space
- *    fractionGroupSize : 5
- *  }
- *  // And/or pass a format object to the method call.
- *  x.toFormat(format);          // 123 456 789.98765 4321
- *  x.toFormat(4, format);       // 123 456 789.9877
- *  x.toFormat(2, 1, format);    // 123 456 789.98
- *
- *  [dp] {number} Decimal places. Integer.
- *  [rm] {number} Rounding mode. Integer, 0 to 8. (Ignored if using big.js.)
- *  [fmt] {Object} A format object.
- *
- */
 export const formatBig = (
   big: Big,
   decimalPlaces: number,
-  fmt: NumberFormat = DEFAULT_NUMBER_FORMAT
+  fmt: NumberFormat = DEFAULT_NUMBER_FORMAT,
 ) => {
-  return formatNum(big, big.s === -1, "fixed", decimalPlaces, fmt);
+  return formatNum(big, big.s === -1, decimalPlaces, fmt);
 };

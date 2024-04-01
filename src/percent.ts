@@ -114,20 +114,14 @@ export class Percent extends Fraction implements PercentObject {
     return new Percent(this.denominator, this.numerator);
   }
 
-  override toSignificant(
-    significantDigits = 5,
-    format?: NumberFormat,
-    rounding?: Rounding
-  ): string {
-    return super
-      .multiply(ONE_HUNDRED)
-      .toSignificant(significantDigits, format, rounding);
+  override toSignificant(significantDigits = 5): string {
+    return super.multiply(ONE_HUNDRED).toSignificant(significantDigits);
   }
 
   override toFixed(
     decimalPlaces = 2,
     format?: NumberFormat,
-    rounding?: Rounding
+    rounding?: Rounding,
   ): string {
     return super.multiply(ONE_HUNDRED).toFixed(decimalPlaces, format, rounding);
   }

@@ -3,7 +3,7 @@
   "include": ["src/"],
   "exclude": ["**/*.test.ts"],
   "compilerOptions": {
-    "lib": ["ES2019", "DOM"],
+    "lib": ["ES2022", "DOM"],
     "outDir": "dist/esm/"
   }
 }

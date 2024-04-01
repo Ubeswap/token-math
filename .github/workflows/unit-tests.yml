@@ -15,13 +15,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 14
-      - uses: actions/cache@v3
+          node-version: 20
+      - uses: actions/cache@v4
         with:
           path: .yarn/
           key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
